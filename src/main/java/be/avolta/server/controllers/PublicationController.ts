@@ -29,7 +29,10 @@ export class PublicationController {
   async create(req: Request, res: Response) {
     try {
       const dto: CreatePublicationDTO = req.body;
-      const publication = await this.publicationService.create(dto, req.user!.id);
+      if (!req.user) {
+        return res.status(400).json({ message: 'Utilisateur non authentifié' });
+      }
+      const publication = await this.publicationService.create(dto, req.user.id);
       res.status(201).json(publication);
     } catch (error) {
       res.status(500).json({ message: 'Erreur lors de la création de la publication' });

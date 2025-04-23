@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } f
 import { User } from './User';
 import { Publication } from './Publication';
 
+
 @Entity('comments')
 export class Comment {
   @PrimaryGeneratedColumn('uuid')
