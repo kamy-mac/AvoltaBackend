@@ -16,3 +16,5 @@ RUN ls -la ./target/
 ENTRYPOINT ["sh", "-c", "ls -la /app/target && java -jar /app/target/avolta-backend-1.0.0.jar"]
 
 EXPOSE 8090
+# Utilisez un script shell pour permettre la substitution de variables
+CMD java -jar app.jar
