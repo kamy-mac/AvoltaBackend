@@ -23,6 +23,7 @@ public class FileUploadController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+    @SuppressWarnings("null")
     @PostMapping("/image")
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
         try {

@@ -31,57 +31,39 @@ public class SecurityConfig {
         this.corsConfig = corsConfig;
     }
     
-    @SuppressWarnings("removal")
     @Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-        .cors().and()
-        .csrf().disable()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
+    return http
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> {}) // Active CORS sans configuration ici (tu ajoutes le filtre plus bas)
+        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            // Allow preflight requests
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            
-            // Public endpoints
             .requestMatchers("/api/auth/login").permitAll()
             .requestMatchers("/api/publications/public/**").permitAll()
             .requestMatchers("/api/newsletter/subscribe").permitAll()
-            .requestMatchers("/api/newsletter/unsubscribe").permitAll() // Ajouté pour cohérence
-            .requestMatchers("/api/publications/{id}").permitAll() // Permettre l'accès public aux détails des publications
-                
-            
-            // Swagger UI
+            .requestMatchers("/api/newsletter/unsubscribe").permitAll()
+            .requestMatchers("/api/publications/{id}").permitAll()
             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-            
-            // SUPERADMIN only endpoints
             .requestMatchers("/api/auth/register").hasAuthority("SUPERADMIN")
             .requestMatchers("/api/users/**").hasAuthority("SUPERADMIN")
             .requestMatchers("/api/publications/pending").hasAuthority("SUPERADMIN")
             .requestMatchers("/api/publications/*/approve").hasAuthority("SUPERADMIN")
             .requestMatchers("/api/publications/*/reject").hasAuthority("SUPERADMIN")
-            
-            // Authenticated endpoints
             .requestMatchers("/api/publications").authenticated()
             .requestMatchers("/api/publications/**").authenticated()
             .requestMatchers("/api/newsletter/subscribers").authenticated()
             .requestMatchers("/api/newsletter/test").authenticated()
             .requestMatchers("/api/newsletter/subscribers/**").authenticated()
-
-            //Regles pour upload d'images
-            .requestMatchers("/api/upload/**").authenticated() // Permet aux utilisateurs authentifiés de télécharger
-            .requestMatchers("/api/uploads/**").permitAll() // Permet à tous d'accéder aux fichiers téléchargés
-            // ... 
-            
-            // Default rule
+            .requestMatchers("/api/upload/**").authenticated()
+            .requestMatchers("/api/uploads/**").permitAll()
             .anyRequest().authenticated()
         )
         .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(new JwtAuthorizationFilter(jwtTokenProvider, userService),
-                        UsernamePasswordAuthenticationFilter.class);
-
-    return http.build();
+        .addFilterBefore(new JwtAuthorizationFilter(jwtTokenProvider, userService), UsernamePasswordAuthenticationFilter.class)
+        .build();
 }
+
 
     @Autowired
     public void setUserService(@Lazy UserService userService) {
