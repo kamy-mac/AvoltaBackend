@@ -14,3 +14,5 @@ COPY --from=build /app/target/ ./target/
 RUN ls -la ./target/
 # Utiliser un point d'entrée qui liste les fichiers avant de démarrer
 ENTRYPOINT ["sh", "-c", "ls -la /app/target && java -jar /app/target/avolta-backend-1.0.0.jar"]
+
+EXPOSE 8090
