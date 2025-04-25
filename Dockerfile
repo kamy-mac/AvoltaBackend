@@ -6,7 +6,8 @@ RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+# Utilisez le nom exact de votre fichier JAR
+COPY --from=build /app/target/avolta-backend-1.0.0.jar app.jar
 EXPOSE 8090
 ENV PORT=8090
 ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]
