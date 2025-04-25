@@ -1,6 +1,8 @@
 com\avolta\dto\UserDto.class
 com\avolta\dto\responses\JwtAuthResponse.class
+com\avolta\config\WebConfig.class
 com\avolta\exceptions\ResourceNotFoundException.class
+com\avolta\config\FileStorageInitializer.class
 com\avolta\dto\requests\CreatePublicationRequest.class
 com\avolta\dto\responses\ApiResponse.class
 com\avolta\Application.class
@@ -8,6 +10,7 @@ com\avolta\config\CorsConfig.class
 com\avolta\models\Publication.class
 com\avolta\repositories\NewsletterSubscriberRepository.class
 com\avolta\services\NewsletterService.class
+com\avolta\controllers\FileUploadController.class
 com\avolta\controllers\AuthController.class
 com\avolta\models\Comment.class
 com\avolta\dto\PublicationDto.class
@@ -28,6 +31,7 @@ com\avolta\security\JwtTokenProvider.class
 com\avolta\models\Publication$Status.class
 com\avolta\controllers\PublicationController.class
 com\avolta\repositories\UserRepository.class
+com\avolta\config\DataInitializer.class
 com\avolta\services\PublicationService.class
 com\avolta\models\User$Role.class
 com\avolta\models\User$Status.class
