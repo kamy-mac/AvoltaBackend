@@ -113,5 +113,6 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>avolta-backend-1.0.0</finalName>
     </build>
 </project>
