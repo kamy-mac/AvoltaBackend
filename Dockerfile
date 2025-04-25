@@ -1,13 +1,14 @@
-FROM maven:3.8.5-openjdk-17-slim AS build
+FROM maven:3.9-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 COPY pom.xml .
+COPY .mvn .mvn
+COPY mvnw .
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN chmod +x mvnw
+RUN ./mvnw clean package -DskipTests
 
-FROM openjdk:17-slim
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE ${PORT}
-CMD ["sh", "-c", "java -Dserver.port=${PORT} -Dlogging.level.root=DEBUG -jar app.jar"]
-RUN mvn clean package -DskipTests
-RUN ls -la target/
+EXPOSE 8090
+ENTRYPOINT ["java", "-jar", "app.jar"]
