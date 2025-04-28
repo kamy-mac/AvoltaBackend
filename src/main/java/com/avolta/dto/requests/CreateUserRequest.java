@@ -23,4 +23,15 @@ public class CreateUserRequest {
     private String password;
     
     private User.Role role = User.Role.ADMIN;
+    public String getEmail() {
+        return email;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public User.Role getRole() {
+        return role;
+    }
 }
