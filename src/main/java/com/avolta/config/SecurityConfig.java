@@ -22,10 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @SuppressWarnings("unused")
     private final JwtTokenProvider jwtTokenProvider;
     private final CorsConfig corsConfig;
-    @SuppressWarnings("unused")
     private UserService userService;
 
     public SecurityConfig(JwtTokenProvider jwtTokenProvider, CorsConfig corsConfig) {
@@ -34,18 +32,38 @@ public class SecurityConfig {
     }
     
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> {})
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                // ✅ TEMPORAIRE : TOUT OUVERT pour tester
-                .anyRequest().permitAll()
-            )
-            .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class)
-            .build();
-    }
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    return http
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> {}) // Active CORS sans configuration ici (tu ajoutes le filtre plus bas)
+        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .requestMatchers("/api/auth/login").permitAll()
+            .requestMatchers("/api/publications/public/**").permitAll()
+            .requestMatchers("/api/newsletter/subscribe").permitAll()
+            .requestMatchers("/api/newsletter/unsubscribe").permitAll()
+            .requestMatchers("/api/publications/{id}").permitAll()
+            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+            .requestMatchers("/api/auth/register").hasAuthority("SUPERADMIN")
+            .requestMatchers("/api/users/**").hasAuthority("SUPERADMIN")
+            .requestMatchers("/api/publications/pending").hasAuthority("SUPERADMIN")
+            .requestMatchers("/api/publications/*/approve").hasAuthority("SUPERADMIN")
+            .requestMatchers("/api/publications/*/reject").hasAuthority("SUPERADMIN")
+            .requestMatchers("/api/publications").authenticated()
+            .requestMatchers("/api/publications/**").authenticated()
+            .requestMatchers("/api/newsletter/subscribers").authenticated()
+            .requestMatchers("/api/newsletter/test").authenticated()
+            .requestMatchers("/api/newsletter/subscribers/**").authenticated()
+            .requestMatchers("/api/upload/**").authenticated()
+            .requestMatchers("/api/uploads/**").permitAll()
+            .anyRequest().authenticated()
+        )
+        .addFilterBefore(corsConfig.corsFilter(), UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(new JwtAuthorizationFilter(jwtTokenProvider, userService), UsernamePasswordAuthenticationFilter.class)
+        .build();
+}
+
 
     @Autowired
     public void setUserService(@Lazy UserService userService) {
@@ -62,3 +80,4 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 }
+
