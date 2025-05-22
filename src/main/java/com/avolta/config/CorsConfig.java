@@ -18,7 +18,7 @@ public class CorsConfig {
         config.addAllowedOrigin("http://localhost:5173"); // Frontend Vite dev server
         config.addAllowedOrigin("http://localhost:4173"); // Frontend Vite preview
         // Ajouter l'origine de votre frontend déployé
-        config.addAllowedOrigin("https://votre-frontend-url.railway.app");
+        config.addAllowedOrigin("https://avoltafrontend-production.up.railway.app");
         // Allow all HTTP methods
         config.addAllowedMethod("*");
         
