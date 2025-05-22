@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/*.jar
+web: java -Xmx512m -Xms256m -Dserver.port=$PORT -jar target/avolta-backend-1.0.0.jar
