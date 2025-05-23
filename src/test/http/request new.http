@@ -1,7 +1,9 @@
 # Requêtes HTTP pour tester les contrôleurs Spring Boot
 
 ## Variables d'environnement
-@baseUrl = http://localhost:8090
+@baseUrl = https://avoltabackend-production.up.railway.app/api/api
+
+# http://localhost:8090
 @token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGF2b2x0YS5iZSIsImlhdCI6MTc0MjQ2OTAyNSwiZXhwIjoxNzQyNTU1NDI1fQ.dqWDH0psCjFV_34JKX9lceB5jAb0I67rUPJoJhSKvBg
 @supertoken = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdXBlcmFkbWluQGF2b2x0YS5iZSIsImlhdCI6MTc0MjQ2OTAyNSwiZXhwIjoxNzQyNTU1NDI1fQ.dqWDH0psCjFV_34JKX9lceB5jAb0I67rUPJoJhSKvBg
 
@@ -171,3 +173,11 @@ Content-Type: application/json
   "password": "admin123"
 }
 
+### loger  un utilisateur (endpoint public)
+POST https://avoltabackend-production.up.railway.app/api/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "superadmin@avolta.be",
+  "password": "superadmin123"
+}
