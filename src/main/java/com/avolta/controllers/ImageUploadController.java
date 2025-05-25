@@ -56,7 +56,7 @@ public class ImageUploadController {
         } catch (Exception e) {
             log.error("Erreur lors de l'upload d'image: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error("Erreur lors de l'upload: " + e.getMessage()));
+                .body(ApiResponse.error("Erreur lors de l'upload: " + e.getMessage(), null));
         }
     }
 
@@ -72,7 +72,7 @@ public class ImageUploadController {
         } catch (Exception e) {
             log.error("Erreur lors de la suppression d'image: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("Erreur lors de la suppression: " + e.getMessage()));
+                .body(ApiResponse.error("Erreur lors de la suppression: " + e.getMessage(), null));
         }
     }
 }

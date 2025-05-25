@@ -1,8 +1,6 @@
-// src/main/java/com/avolta/services/CloudinaryService.java
 package com.avolta.services;
 
 import com.cloudinary.Cloudinary;
-import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,21 +30,17 @@ public class CloudinaryService {
             String publicId = generateUniquePublicId();
             
             // Configuration de l'upload
+            @SuppressWarnings("unchecked")
             Map<String, Object> uploadParams = ObjectUtils.asMap(
                 "public_id", publicId,
                 "folder", "avolta/publications", // Organiser par dossiers
                 "resource_type", "image",
                 "format", "auto", // Optimisation automatique du format
-                "quality", "auto:good", // Optimisation automatique de la qualité
-                "transformation", ObjectUtils.asMap(
-                    "width", 1200,
-                    "height", 800,
-                    "crop", "limit", // Limite la taille sans déformer
-                    "fetch_format", "auto" // Format optimal selon le navigateur
-                )
+                "quality", "auto:good" // Optimisation automatique de la qualité
             );
 
             // Upload vers Cloudinary
+            @SuppressWarnings("unchecked")
             Map<String, Object> uploadResult = cloudinary.uploader().upload(
                 file.getBytes(), 
                 uploadParams
@@ -75,6 +69,7 @@ public class CloudinaryService {
      */
     public void deleteImage(String publicId) throws IOException {
         try {
+            @SuppressWarnings("unchecked")
             Map<String, Object> result = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
             String resultStatus = (String) result.get("result");
             
@@ -90,26 +85,37 @@ public class CloudinaryService {
     }
 
     /**
-     * Génère une URL transformée pour une image - VERSION CORRIGÉE
+     * Génère une URL transformée pour une image - VERSION SIMPLIFIÉE
      */
+    @SuppressWarnings("rawtypes")
     public String getTransformedImageUrl(String publicId, int width, int height, String cropMode) {
         try {
-            // Utilisation correcte de l'API Transformation de Cloudinary
-            Transformation transformation = new Transformation()
-                .width(width)
-                .height(height)
-                .crop(cropMode)
-                .quality("auto")
-                .fetchFormat("auto");
-            
+            // Utilisation de la méthode url() directe de Cloudinary
             return cloudinary.url()
-                .transformation(transformation)
+                .transformation(new com.cloudinary.Transformation()
+                    .width(width)
+                    .height(height)
+                    .crop(cropMode)
+                    .quality("auto")
+                    .fetchFormat("auto"))
                 .generate(publicId);
                 
         } catch (Exception e) {
             log.error("Erreur lors de la génération de l'URL transformée: {}", e.getMessage());
             // Retourner l'URL originale en cas d'erreur
             return cloudinary.url().generate(publicId);
+        }
+    }
+
+    /**
+     * Génère une URL simple pour une image
+     */
+    public String getImageUrl(String publicId) {
+        try {
+            return cloudinary.url().generate(publicId);
+        } catch (Exception e) {
+            log.error("Erreur lors de la génération de l'URL: {}", e.getMessage());
+            return "";
         }
     }
 
