@@ -2,6 +2,7 @@
 package com.avolta.services;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,18 +90,27 @@ public class CloudinaryService {
     }
 
     /**
-     * Génère une URL transformée pour une image
+     * Génère une URL transformée pour une image - VERSION CORRIGÉE
      */
     public String getTransformedImageUrl(String publicId, int width, int height, String cropMode) {
-        return cloudinary.url()
-            .transformation(ObjectUtils.asMap(
-                "width", width,
-                "height", height,
-                "crop", cropMode,
-                "quality", "auto",
-                "fetch_format", "auto"
-            ))
-            .generate(publicId);
+        try {
+            // Utilisation correcte de l'API Transformation de Cloudinary
+            Transformation transformation = new Transformation()
+                .width(width)
+                .height(height)
+                .crop(cropMode)
+                .quality("auto")
+                .fetchFormat("auto");
+            
+            return cloudinary.url()
+                .transformation(transformation)
+                .generate(publicId);
+                
+        } catch (Exception e) {
+            log.error("Erreur lors de la génération de l'URL transformée: {}", e.getMessage());
+            // Retourner l'URL originale en cas d'erreur
+            return cloudinary.url().generate(publicId);
+        }
     }
 
     private void validateImageFile(MultipartFile file) throws IOException {
